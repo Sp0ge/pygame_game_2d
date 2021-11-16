@@ -1,4 +1,5 @@
 from os import walk
+from typing import ClassVar
 import pygame
 from pygame import sprite
 from pygame import display
@@ -13,18 +14,19 @@ clock = pygame.time.Clock()
     
 #player & game animation
 game_bg = pygame.image.load('sprite/bg.jpg')
+
 player_stay_right = [pygame.image.load('sprite/stayright/1.png'),
                pygame.image.load('sprite/stayright/2.png'),
-               pygame.image.load('sprite/stayright/3.png'),
-               pygame.image.load('sprite/stayright/4.png'),
-               pygame.image.load('sprite/stayright/5.png'),
-               pygame.image.load('sprite/stayright/6.png'),]
+               pygame.image.load('sprite/stayright/1.png'),
+               pygame.image.load('sprite/stayright/2.png'),
+               pygame.image.load('sprite/stayright/1.png'),
+               pygame.image.load('sprite/stayright/2.png'),]
 player_stay_left = [pygame.image.load('sprite/stayleft/1.png'),
                pygame.image.load('sprite/stayleft/2.png'),
-               pygame.image.load('sprite/stayleft/3.png'),
-               pygame.image.load('sprite/stayleft/4.png'),
-               pygame.image.load('sprite/stayleft/5.png'),
-               pygame.image.load('sprite/stayleft/6.png'),]
+               pygame.image.load('sprite/stayleft/1.png'),
+               pygame.image.load('sprite/stayleft/2.png'),
+               pygame.image.load('sprite/stayleft/1.png'),
+               pygame.image.load('sprite/stayleft/2.png'),]
 
 player_walk_right = [pygame.image.load('sprite/run_right/1.png'),
                pygame.image.load('sprite/run_right/2.png'),
@@ -58,8 +60,8 @@ player_jump_left = [pygame.image.load('sprite/jump_left/1.png'),
 
 
 
-
-
+lookright = False
+lookleft = False
 walkright = False
 walkleft = False
 jumpright = False
@@ -68,13 +70,12 @@ animCount = 0
 jumpCount = 10
 last = True
 
-
 def draw():
     global animCount
-    Game.blit(game_bg, (0,-600))
+    Game.blit(game_bg, (BG_X,BG_Y))
     if animCount + 1 >= FPS:
         animCount = 0
-
+    
     if walkleft:
         image = pygame.transform.scale(player_walk_left[animCount//5], (PLAYER_WIDTH,PLAYER_HEIGHT))
         Game.blit(image,(PLAYER_X,PLAYER_Y))
@@ -102,16 +103,24 @@ def draw():
 
     pygame.display.update()
 
+bullets = []
+
 #main loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
-      
+             
     draw()      
 
     # player controls 
     keys = pygame.key.get_pressed()
+    if not(last):
+        facing = 1
+    else:
+        facing = -1
+
+
     if keys[pygame.K_d] and PLAYER_X < WIDTH - 2 - PLAYER_WIDTH:
         if keys[pygame.K_LSHIFT]:
             PLAYER_X += PLAYER_SPEED*2

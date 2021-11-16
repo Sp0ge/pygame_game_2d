@@ -1,9 +1,14 @@
 #game
+from pygame.constants import BLEND_RGB_MAX
+
+
 WIDTH,HEIGHT = 1600 , 800
 FPS = 30
 JUMPC = 10
 ISJUMP =  False
 JUMPNOW = 10
+BG_X= 0
+BG_Y = -550
 
 #player
 PLAYER_SPEED = 14
