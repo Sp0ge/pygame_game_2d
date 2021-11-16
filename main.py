@@ -4,7 +4,7 @@ from pygame import sprite
 from pygame import display
 from pygame import image
 from game_config import *
-import this
+
 pygame.init()
 Game = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("THE BEST GAME EVER (Ver 0.1)")
@@ -36,7 +36,7 @@ player_walk_left = [pygame.image.load('sprite/run_left/1.png'),
 
 player_jump_right = [pygame.image.load('sprite/jump_right/1.png'),
                pygame.image.load('sprite/jump_right/2.png'),
-               pygame.image.load('sprite/jump_rihgt/3.png'),
+               pygame.image.load('sprite/jump_rigHt/3.png'),
                pygame.image.load('sprite/jump_right/4.png'),
                pygame.image.load('sprite/jump_right/5.png'),
                pygame.image.load('sprite/jump_right/6.png'),]
@@ -56,7 +56,11 @@ player_jump_left = [pygame.image.load('sprite/jump_left/1.png'),
 
 walkright = False
 walkleft = False
+jumpright = False
+jumpleft = False
 animCount = 0
+jumpCount = 10
+last = 1
 
 
 def draw():
@@ -67,6 +71,14 @@ def draw():
 
     if walkleft:
         image = pygame.transform.scale(player_walk_left[animCount//5], (PLAYER_WIDTH,PLAYER_HEIGHT))
+        Game.blit(image,(PLAYER_X,PLAYER_Y))
+        animCount += 1
+    elif jumpright:
+        image = pygame.transform.scale(player_jump_right[animCount//5], (PLAYER_WIDTH,PLAYER_HEIGHT))
+        Game.blit(image,(PLAYER_X,PLAYER_Y))
+        animCount += 1
+    elif jumpleft:
+        image = pygame.transform.scale(player_jump_left[animCount//5], (PLAYER_WIDTH,PLAYER_HEIGHT))
         Game.blit(image,(PLAYER_X,PLAYER_Y))
         animCount += 1
     elif walkright:
@@ -90,20 +102,49 @@ while True:
 
     # player controls 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_d] and PLAYER_X < WIDTH - 2 - PLAYER_WIDTH:
-        PLAYER_X += PLAYER_SPEED
-        walkleft = False
-        walkright = True
-              
-    elif keys[pygame.K_a] and PLAYER_X > 2:
-        PLAYER_X -= PLAYER_SPEED
-        walkleft = True
-        walkright = False
+    if not(ISJUMP):
+        if keys[pygame.K_d] and PLAYER_X < WIDTH - 2 - PLAYER_WIDTH:
+            PLAYER_X += PLAYER_SPEED
+            walkleft = False
+            walkright = True
+            last = 1
+            
+        elif keys[pygame.K_a] and PLAYER_X > 2:
+            PLAYER_X -= PLAYER_SPEED
+            walkleft = True
+            walkright = False
+            last = 2
+        
+        elif keys[pygame.K_SPACE]:
+            ISJUMP = True
+        else:
+            walkleft = False
+            walkright = False
+            amimCount = 0
+           
         
     else:
-        walkleft = False
-        walkright = False
-        amimCount = 0
+        if last == 1:
+            jumpright = True
+        else:
+            jumpleft = True
+            
+        if jumpCount >= -10:
+            print('jump+>>',PLAYER_Y)
+            if jumpCount < 0:
+                PLAYER_Y += (jumpCount ** 2) / 2
+            else:
+                print('jump->>',PLAYER_Y)
+                PLAYER_Y -= (jumpCount ** 2) / 2
+            jumpCount -= 1
+        else:
+            ISJUMP = False
+            jumpleft = False
+            jumpright = False
+            jumpCount = 10
+            
+            
+        
         
         
     clock.tick(FPS) 
