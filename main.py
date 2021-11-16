@@ -1,19 +1,19 @@
-from os import walk
-from typing import ClassVar
+import random
 import pygame
 from pygame import sprite
 from pygame import display
 from pygame import image
+from pygame import rect
 from game_config import *
 
 pygame.init()
 Game = pygame.display.set_mode((WIDTH,HEIGHT))
-pygame.display.set_caption("THE BEST GAME EVER (Ver 0.1)")
+pygame.display.set_caption("Parkour Ninja (Ver 0.1)")
 clock = pygame.time.Clock()
-
     
-#player & game animation
-game_bg = pygame.image.load('sprite/bg.jpg')
+#player & game animation Sprites
+game_sky = pygame.image.load('sprite/bg_sky.gif')
+game_floor = pygame.image.load('sprite/bg.jpg')
 
 player_stay_right = [pygame.image.load('sprite/stayright/1.png'),
                pygame.image.load('sprite/stayright/2.png'),
@@ -59,7 +59,6 @@ player_jump_left = [pygame.image.load('sprite/jump_left/1.png'),
 
 
 
-
 lookright = False
 lookleft = False
 walkright = False
@@ -69,10 +68,16 @@ jumpleft = False
 animCount = 0
 jumpCount = 10
 last = True
+BG_Y = 0
+BG_X = 800  
 
+
+#animation and drawing level
 def draw():
     global animCount
-    Game.blit(game_bg, (BG_X,BG_Y))
+    Game.blit(game_sky, (-130,-600))
+    Game.blit(game_floor, (0,600))
+    
     if animCount + 1 >= FPS:
         animCount = 0
     
@@ -100,27 +105,21 @@ def draw():
         image = pygame.transform.scale(player_stay_left[animCount//5], (PLAYER_WIDTH,PLAYER_HEIGHT))
         Game.blit(image,(PLAYER_X,PLAYER_Y))
         animCount += 1
-
     pygame.display.update()
-
-bullets = []
 
 #main loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit()
-             
+            exit()     
     draw()      
-
-    # player controls 
+    
+#playing controls   
     keys = pygame.key.get_pressed()
     if not(last):
         facing = 1
     else:
         facing = -1
-
-
     if keys[pygame.K_d] and PLAYER_X < WIDTH - 2 - PLAYER_WIDTH:
         if keys[pygame.K_LSHIFT]:
             PLAYER_X += PLAYER_SPEED*2
@@ -154,6 +153,11 @@ while True:
     if not(ISJUMP):  
         if keys[pygame.K_SPACE]:
             ISJUMP = True    
+    
+    
+    
+    
+#jump phys
     else:
         if not(last):
             jumpleft = True
