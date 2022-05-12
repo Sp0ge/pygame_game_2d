@@ -2,17 +2,23 @@
 # -*- coding: utf-8 -*-
 
 # Импортируем библиотеку pygame
+import sys
 import pygame
 from pygame import *
+from soupsieve import escape
+from sqlalchemy import true
 from player import *
 from blocks import *
 from level import *
+from pygame.locals import *
+from pygame import mixer
 
 #Объявляем переменные
-WIN_WIDTH = 1920 #Ширина создаваемого окна
-WIN_HEIGHT = 1080 # Высота
+WIN_WIDTH = 960 #Ширина создаваемого окна
+WIN_HEIGHT = 540 # Высота
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) # Группируем ширину и высоту в одну переменную
-BACKGROUND_COLOR = "#004400"
+BACKGROUND_COLOR = "#000000"
+lvl = 1
 
 class Camera(object):
     def __init__(self, camera_func, width, height):
@@ -41,7 +47,7 @@ def camera_configure(camera, target_rect):
 def main():
     pygame.init() # Инициация PyGame, обязательная строчка 
     screen = pygame.display.set_mode(DISPLAY) # Создаем окошко
-    pygame.display.set_caption("Super Mario Boy") # Пишем в шапку
+    pygame.display.set_caption("Fucking Mario") # Пишем в шапку
     bg = Surface((WIN_WIDTH,WIN_HEIGHT)) # Создание видимой поверхности
                                          # будем использовать как фон
     bg.fill(Color(BACKGROUND_COLOR))     # Заливаем поверхность сплошным цветом
@@ -52,24 +58,37 @@ def main():
     
     entities = pygame.sprite.Group() # Все объекты
     platforms = [] # то, во что мы будем врезаться или опираться
-    
+    mixer.init()
+    mixer.music.load(f'music/sound_0{lvl}.mp3')
+    mixer.music.play()
     entities.add(hero)
        
     timer = pygame.time.Clock()
     x=y=0 # координаты
-    for row in level: # вся строка
+    for row in level[lvl]: # вся строка
         for col in row: # каждый символ
             if col == "-":
                 pf = Platform(x,y)
                 entities.add(pf)
                 platforms.append(pf)
-
+            if col == "-":
+                pf = Background(x,y)
+                entities.add(pf)
+                platforms.append(pf)
+            if col == "!":
+                pf = Finish(x,y)
+                entities.add(pf)
+                platforms.append(pf)
+            if col == "!":
+                pf = Finish(x,y)
+                entities.add(pf)
+                platforms.append(pf)
             x += PLATFORM_WIDTH #блоки платформы ставятся на ширине блоков
         y += PLATFORM_HEIGHT    #то же самое и с высотой
         x = 0                   #на каждой новой строчке начинаем с нуля
     
-    total_level_width  = len(level[0])*PLATFORM_WIDTH # Высчитываем фактическую ширину уровня
-    total_level_height = len(level)*PLATFORM_HEIGHT   # высоту
+    total_level_width  = len(level[lvl][0])*PLATFORM_WIDTH # Высчитываем фактическую ширину уровня
+    total_level_height = len(level[lvl])*PLATFORM_HEIGHT   # высоту
     
     camera = Camera(camera_configure, total_level_width, total_level_height) 
     
@@ -84,6 +103,7 @@ def main():
                 left = True
             if e.type == KEYDOWN and e.key == K_RIGHT:
                 right = True
+                
 
 
             if e.type == KEYUP and e.key == K_UP:

@@ -5,9 +5,9 @@ from pygame import *
 import pyganim
 import os
 
-MOVE_SPEED = 5
-WIDTH = 22
-HEIGHT = 32
+MOVE_SPEED = 7
+WIDTH = 32
+HEIGHT = 28
 COLOR =  "#888888"
 JUMP_POWER = 10
 GRAVITY = 0.35 # Сила, которая будет тянуть нас вниз
