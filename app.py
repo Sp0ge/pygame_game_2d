@@ -18,7 +18,7 @@ WIN_WIDTH = 960 #Ширина создаваемого окна
 WIN_HEIGHT = 540 # Высота
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT) # Группируем ширину и высоту в одну переменную
 BACKGROUND_COLOR = "#000000"
-lvl = 1
+lvl = 2
 
 class Camera(object):
     def __init__(self, camera_func, width, height):
@@ -79,10 +79,6 @@ def main():
                 pf = Finish(x,y)
                 entities.add(pf)
                 platforms.append(pf)
-            if col == "!":
-                pf = Finish(x,y)
-                entities.add(pf)
-                platforms.append(pf)
             x += PLATFORM_WIDTH #блоки платформы ставятся на ширине блоков
         y += PLATFORM_HEIGHT    #то же самое и с высотой
         x = 0                   #на каждой новой строчке начинаем с нуля
@@ -112,6 +108,7 @@ def main():
                 right = False
             if e.type == KEYUP and e.key == K_LEFT:
                 left = False
+            
 
         screen.blit(bg, (0,0))      # Каждую итерацию необходимо всё перерисовывать 
 
